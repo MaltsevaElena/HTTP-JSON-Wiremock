@@ -1,4 +1,4 @@
-package com.epam.izh.rd.online.factory;
+package ru.maltseva.elena.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
