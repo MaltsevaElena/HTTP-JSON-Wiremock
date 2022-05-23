@@ -38,15 +38,18 @@ public class Pokemon {
      */
     private short defense;
 
+    private String picture;
+
     public Pokemon() {
     }
 
-    public Pokemon(long pokemonId, String pokemonName, short hp, short attack, short defense) {
+    public Pokemon(long pokemonId, String pokemonName, short hp, short attack, short defense, String picture) {
         this.pokemonId = pokemonId;
         this.pokemonName = pokemonName;
         this.hp = hp;
         this.attack = attack;
         this.defense = defense;
+        this.picture=picture;
     }
 
     public long getPokemonId() {
@@ -89,6 +92,14 @@ public class Pokemon {
         this.defense = defense;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,7 +111,8 @@ public class Pokemon {
         if (hp != pokemon.hp) return false;
         if (attack != pokemon.attack) return false;
         if (defense != pokemon.defense) return false;
-        return Objects.equals(pokemonName, pokemon.pokemonName);
+        if (Objects.equals(pokemonName, pokemon.pokemonName)) return false;
+        return Objects.equals(picture, pokemon.picture);
     }
 
     @Override
@@ -110,6 +122,7 @@ public class Pokemon {
         result = 31 * result + (int) hp;
         result = 31 * result + (int) attack;
         result = 31 * result + (int) defense;
+        result = 31 * result + (picture != null ? picture.hashCode() : 0);
         return result;
     }
 
@@ -121,6 +134,7 @@ public class Pokemon {
                 ", hp=" + hp +
                 ", attack=" + attack +
                 ", defense=" + defense +
+                ", picture=" + picture +
                 '}';
     }
 }

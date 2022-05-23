@@ -7,7 +7,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
+import ru.maltseva.elena.service.PokemonFetchingService;
+import ru.maltseva.elena.service.PokemonFethingServiceImpl;
+import ru.maltseva.elena.service.PokemonFightingClubService;
+import ru.maltseva.elena.service.PokemonFightingClubServiceImpl;
+import ru.maltseva.elena.wwww.MainWindows;
+
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -18,84 +23,46 @@ import java.net.URL;
 
 public class Http {
     public static void main(String[] args) throws IOException {
-        String urlSquirtle = "https://pokeapi.co/api/v2/pokemon/squirtle";
-        String squirtleJson = httpRequest(urlSquirtle);
+        PokemonFetchingService pokemonFethingService = new PokemonFethingServiceImpl();
 
-        Pokemon squirtle = creatingPokemonFromJson(squirtleJson);
+        Pokemon ditto = pokemonFethingService.fetchByName("ditto");
+        System.out.println(ditto);
+
+        Pokemon squirtle = pokemonFethingService.fetchByName("squirtle");
         System.out.println(squirtle);
 
-        String urlDiglett = "https://pokeapi.co/api/v2/pokemon/diglett";
-        String diglettJson = httpRequest(urlDiglett);
+        PokemonFightingClubService pokemonFightingClubService = new PokemonFightingClubServiceImpl();
+        System.out.println(pokemonFightingClubService.doBattle(squirtle, squirtle));
 
-        Pokemon diglett = creatingPokemonFromJson(diglettJson);
-        System.out.println(diglett);
+        downloadFiles(squirtle.getPicture(), "C:\\ForJava\\HTTP-JSON-Wiremock\\src\\main\\resources\\winner.jpg");
+
+        MainWindows mw = new MainWindows();
 
     }
 
-    public static Pokemon creatingPokemonFromJson(String json) throws JsonProcessingException {
-        ObjectMapperFactory mapperFactory = new ObjectMapperFactoryImpl();
-        ObjectMapper mapper = mapperFactory.getObjectMapper();
+    public static void downloadFiles(String strURL, String strPath) throws IOException {
+        URL connection = new URL(strURL);
+        HttpURLConnection urlconn;
+        urlconn = (HttpURLConnection) connection.openConnection();
+        urlconn.setRequestMethod("GET");
+        urlconn.connect();
+        InputStream in = null;
+        in = urlconn.getInputStream();
 
-        Pokemon pokemon = mapper.readValue(json, Pokemon.class);
-
-
-        JsonNode jsonNode = mapper.readValue(json, JsonNode.class);
-        JsonNode stats = jsonNode.get("stats");
-        for (JsonNode jnode : stats) {
-            JsonNode stat = jnode.findValue("stat");
-
-            String name = stat.get("name").asText();
-
-            JsonNode number = jnode.get("base_stat");
-            if (name.equalsIgnoreCase("hp")) {
-                pokemon.setHp(number.shortValue());
-            } else if (name.equalsIgnoreCase("attack")) {
-                pokemon.setAttack(number.shortValue());
-            } else if (name.equalsIgnoreCase("defense")) {
-                pokemon.setDefense(number.shortValue());
-            }
-
+        OutputStream writer = new FileOutputStream(strPath);
+        byte[] buffer = new byte[1];
+        int c = in.read(buffer);
+        while (c > 0) {
+            writer.write(buffer, 0, c);
+            c = in.read(buffer);
+            //System.out.print(c + " ");
         }
-        return pokemon;
+        writer.flush();
+        writer.close();
+        in.close();
     }
-    public static String httpRequest(String stringUrl) {
-        URL url;
-        HttpURLConnection connection = null;
 
-        int responseCode;
 
-        InputStream in;
-        String result = " ";
 
-        try {
-            url = new URL(stringUrl);
 
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(5000);
-
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("User-Agent", "Chrome/101.0.4951.67");
-            connection.setRequestProperty("Content-Type", "application/json");
-
-            responseCode = connection.getResponseCode();
-            System.out.println("GET Response Code : " + responseCode);
-            if (responseCode == HttpURLConnection.HTTP_OK) { // success
-
-                in = new BufferedInputStream(connection.getInputStream());
-                result = IOUtils.toString(in);
-
-                in.close();
-            } else {
-                System.out.println("GET request not worked");
-            }
-        } catch (MalformedURLException | ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } finally {
-            assert connection != null;
-            connection.disconnect();
-        }
-        return result;
-    }
 }

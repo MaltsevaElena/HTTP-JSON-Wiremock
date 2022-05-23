@@ -2,6 +2,13 @@ package ru.maltseva.elena.service;
 
 import ru.maltseva.elena.entity.Pokemon;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * Сервис по загрузке данных покемонов из внешнего сервиса
  */
