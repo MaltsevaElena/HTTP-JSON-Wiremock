@@ -1,13 +1,11 @@
 package ru.maltseva.elena.service;
 
 import ru.maltseva.elena.entity.Pokemon;
+import ru.maltseva.elena.view.ShowImage;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
 
 public class PokemonFightingClubServiceImpl implements PokemonFightingClubService {
+    private ShowImage showImage;
     @Override
     public Pokemon doBattle(Pokemon p1, Pokemon p2) {
 
@@ -27,11 +25,8 @@ public class PokemonFightingClubServiceImpl implements PokemonFightingClubServic
 
     @Override
     public void showWinner(Pokemon winner) {
-       /* Image img = ImageIO.read(new File("winner.jpg").getImage();
-        img.drawImage(img, 0, 0, null);//выводим линию
-
-        img.drawLine(20, 20, 200, 200);//выводим изображение*/
-
+        System.out.println("Pokemon "+winner.getPokemonName()+" won.");
+        showImage = new ShowImage();
     }
 
     @Override

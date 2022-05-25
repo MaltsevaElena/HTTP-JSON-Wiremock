@@ -13,10 +13,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PokemonFethingServiceImpl implements PokemonFetchingService {
-    private  String strUrl = "https://pokeapi.co/api/v2/pokemon/";
+    private final String strUrl = "https://pokeapi.co/api/v2/pokemon/";
     private final String path = "C:\\ForJava\\HTTP-JSON-Wiremock\\src\\main\\resources\\winner.jpg";
+    private final List <Pokemon> pokemonList = new ArrayList<>();
+
 
     @Override
     public Pokemon fetchByName(String name) throws IllegalArgumentException {
@@ -61,6 +65,8 @@ public class PokemonFethingServiceImpl implements PokemonFetchingService {
             }
             sprites = jsonNode.get("sprites");
             pokemon.setPicture(sprites.get("front_default").asText());
+            System.out.println(pokemon);
+            pokemonList.add(pokemon);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -111,7 +117,46 @@ public class PokemonFethingServiceImpl implements PokemonFetchingService {
     }
 
     @Override
-    public byte[] getPokemonImage(String name) throws IllegalArgumentException {
-        return new byte[1];
+    public byte[] getPokemonImage(String name) throws IllegalArgumentException, IOException {
+        String strUrl = null;
+        URL url;
+
+        HttpURLConnection httpURLConnection;
+        InputStream in;
+        OutputStream writer;
+
+        byte[] bytes;
+        int c;
+
+        for (Pokemon pokemon: pokemonList){
+            if (pokemon.getPokemonName().equalsIgnoreCase(name)){
+                strUrl=pokemon.getPicture();
+            }
+        }
+
+        assert strUrl != null;
+        url = new URL(strUrl);
+
+        httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.connect();
+
+        in = httpURLConnection.getInputStream();
+
+        writer = new FileOutputStream(path);
+
+        bytes = new byte[1];
+        c = in.read(bytes);
+
+        while (c > 0) {
+            writer.write(bytes, 0, c);
+            c = in.read(bytes);
+        }
+
+        writer.flush();
+        writer.close();
+        in.close();
+
+        return bytes;
     }
 }

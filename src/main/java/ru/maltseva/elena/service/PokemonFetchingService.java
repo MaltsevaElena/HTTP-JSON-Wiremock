@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -26,5 +27,5 @@ public interface PokemonFetchingService {
      * @return картинка покемона в виде массива байтов
      * @throws IllegalArgumentException при условии, если имя покемона указано неверно
      */
-    byte[] getPokemonImage(String name) throws IllegalArgumentException;
+    byte[] getPokemonImage(String name) throws IllegalArgumentException, IOException;
 }
