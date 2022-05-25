@@ -14,19 +14,20 @@ public class Main {
         PokemonFetchingService pokemonFethingService;
         PokemonFightingClubService pokemonFightingClubService;
 
-        Pokemon ditto;
-        Pokemon squirtle;
+        Pokemon pikachu;
+        Pokemon slowpoke;
         Pokemon winner;
+
 
 
         pokemonFethingService = new PokemonFethingServiceImpl();
 
-        ditto = pokemonFethingService.fetchByName("ditto");
-        squirtle = pokemonFethingService.fetchByName("squirtle");
+        pikachu = pokemonFethingService.fetchByName("pikachu");
+        slowpoke = pokemonFethingService.fetchByName("slowpoke");
 
         pokemonFightingClubService = new PokemonFightingClubServiceImpl();
 
-        winner = pokemonFightingClubService.doBattle(squirtle, ditto);
+        winner = pokemonFightingClubService.doBattle(slowpoke, pikachu);
 
         pokemonFethingService.getPokemonImage(winner.getPokemonName());
 
